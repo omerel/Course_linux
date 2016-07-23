@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# ===================================================
+# Linux project - Analysis system performnece 
+# Omer Elgrably 021590807 & Rami Kashi 12345678
+
+# help from :	 http://canvasjs.com/ ,
+# 		http://stackoveflow.com,
+#		course material		
+# ===================================================
+
+echo "Hello , please wait 60 seconds to diganose your pc perfomence"
+
+# open a new terminal (thread) and start create the html file with analysis
+gnome-terminal  -e ./execute_command
+
+# count 60 seconds
+for(( i = 60 ; i >= 0 ; i-- ))
+	do
+		sleep 1
+		echo -n "$i "
+	done
+
+# open new firefox window
+echo "You are moving to the analysis webpage..."
+/usr/bin/firefox -new-window file:///home/omer/Downloads/linux_project/index.html
+
+

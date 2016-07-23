@@ -1,0 +1,409 @@
+#!/usr/bin/perl
+
+#//////////////////////////////////////////////////////////////////////////
+#				Disk Graph
+#//////////////////////////////////////////////////////////////////////////
+
+# create Disk status and save the 2 last lines in a file called disk_status
+system ('sar -F 1 1|tail -2 > log_files/disk_status');
+
+# read result from disk_status and use the data for the graph
+open(DATA, "log_files/disk_status") or die "Couldn't open file disk_status, $!";
+
+
+# read lines from the file
+while(<DATA>){
+push(@read_disk,"$_");
+}
+close(DATA) || die "Couldn't close file properly";
+
+# save array of labels
+@data_disk = split(' ',@read_disk[0]);
+
+# save array of values
+@value_disk = split(' ',@read_disk[1]);
+
+# check ratio between used and free space
+$ratio_disk =  @value_disk[2]/(@value_disk[1] + @value_disk[2]);
+
+# save user's recommendation
+if ($ratio_disk < 0.5){
+	$recommendation_disk = "All good, You Have many free space ";
+}
+if ($ratio_disk > 0.8){
+	$recommendation_disk = "Your Free space run out";
+}else{
+	if ($ratio_disk > 0.5){
+		$recommendation_disk = "You Have enogh free space"
+	}
+}
+
+# print result into the html file
+print  '<script> document.getElementById("recommendation_disk").innerHTML=
+"'.$recommendation_disk.'"</script>' ;
+
+#//////////////////////////////////////////////////////////////////////////
+#				CPU Graph
+#//////////////////////////////////////////////////////////////////////////
+
+# create cpu status(2 seconds, 10 samples) and save it in a file called cpu_status
+system ('sar -u 2 10 |tail -12 > log_files/cpu_status');
+
+# read result from cpu_status and use the data for the graph
+open(DATA, "log_files/cpu_status") or die "Couldn't open file cpu_status, $!";
+
+# read lines from the file
+while(<DATA>){
+push(@read_cpu,"$_");
+}
+close(DATA) || die "Couldn't close file properly";
+
+# array of lables
+@data_cpu = split(" ",@read_cpu[0]);
+
+# array of values of every line
+@value_cpu_01 = split(" ",@read_cpu[1]);
+@value_cpu_02 = split(" ",@read_cpu[2]);
+@value_cpu_03 = split(" ",@read_cpu[3]);
+@value_cpu_04 = split(" ",@read_cpu[4]);
+@value_cpu_05 = split(" ",@read_cpu[5]);
+@value_cpu_06 = split(" ",@read_cpu[6]);
+@value_cpu_07 = split(" ",@read_cpu[7]);
+@value_cpu_08 = split(" ",@read_cpu[8]);
+@value_cpu_09 = split(" ",@read_cpu[9]);
+@value_cpu_10 = split(" ",@read_cpu[10]);
+@value_cpu_11 = split(" ",@read_cpu[11]);
+
+#checks values user's recommendation
+$check_user = @value_cpu_11[2];
+$check_idle = @value_cpu_11[7];
+$check_system = @value_cpu_11[4];
+$check_io = @value_cpu_11[5];
+
+# save user's recommendation
+$recommendation_cpu = "Your cpu doing well... not need to change anything";
+if ($check_user > 50){
+	$recommendation_cpu = "You are running many tasks,you should reduce tasks in the same time or upgrade your cpu";
+}
+if ($check_system > 50){
+	$recommendation_cpu = "You should upgrade your cpu";
+}
+if ($check_idle > 50){
+	$recommendation_cpu = "Your cpu is awesome, The OS works well on your cpu";
+}
+if ($check_io > 15){
+	$recommendation_cpu = $recommendation_cpu." and your I/O mount is slow";
+}
+
+# print result into the html file
+print  '<script> document.getElementById("recommendation_cpu").innerHTML=
+"'.$recommendation_cpu.'"</script>' ;
+
+#//////////////////////////////////////////////////////////////////////////
+#				Memory Graph
+#//////////////////////////////////////////////////////////////////////////
+
+# create memory status and save the 12 last lines in a file called memory_status
+system ('sar -r 2 10|tail -12 > log_files/memory_status');
+
+# read result from memory_status and use the data for the graph
+open(DATA, "log_files/memory_status") or die "Couldn't open file memory_status, $!";
+
+# read line from the file
+while(<DATA>){
+push(@read_mem,"$_");
+}
+close(DATA) || die "Couldn't close file properly";
+
+
+# array of values of every line
+@value_mem_01 = split(" ",@read_mem[1]);
+@value_mem_02 = split(" ",@read_mem[2]);
+@value_mem_03 = split(" ",@read_mem[3]);
+@value_mem_04 = split(" ",@read_mem[4]);
+@value_mem_05 = split(" ",@read_mem[5]);
+@value_mem_06 = split(" ",@read_mem[6]);
+@value_mem_07 = split(" ",@read_mem[7]);
+@value_mem_08 = split(" ",@read_mem[8]);
+@value_mem_09 = split(" ",@read_mem[9]);
+@value_mem_10 = split(" ",@read_mem[10]);
+@value_mem_avg = split(" ",@read_mem[11]);
+
+$check_mem = @value_mem_avg[3]; 
+#save user's recommendation
+if ($check_mem < 50){
+	$recommendation_mem = "All good, You Have plenty memory ";
+}
+if ($check_mem > 70){
+	$recommendation_mem = "Your memroy run out, you need to upgrade";
+}else{
+	if ($check_mem >= 50){
+		$recommendation_mem = "Your memory is limited, dont run a llot of programs "
+	}
+}
+print  '<script> document.getElementById("recommendation_mem").innerHTML=
+"'.$recommendation_mem.'"</script>' ;
+
+#//////////////////////////////////////////////////////////////////////////
+#				Network Graph
+#//////////////////////////////////////////////////////////////////////////
+
+# create network status and save the 3 last lines in a file called network_status
+system ('sar -n DEV 20 1|tail -3 > log_files/network_status');
+
+# read result from network_status and use the data for the graph
+open(DATA, "log_files/network_status") or die "Couldn't open file network_status, $!";
+
+# read line from the file
+while(<DATA>){
+push(@read_net,"$_");
+}
+
+# array of labels 
+@data_net = split(' ',@read_net[0]);
+
+# array of values of every line
+@value_net_avg = split(" ",@read_net[1]);
+
+$check_net_r_kb = @value_net_avg[4];
+$check_net_r_packet = @value_net_avg[2];
+$check_net_t_kb = @value_net_avg[5]; 
+$check_net_t_packet = @value_net_avg[3]; 
+
+#save user's recommendation
+if ($check_net_r_packet > 50) 
+{
+	if ($check_net_r_kb > 0 && $check_net_r_kb <= 30 ) {$recommendation_net = " Your network band is slow !!!"};
+	if ($check_net_r_kb > 30 && $check_net_r_kb < 50 ) {$recommendation_net = " Your network band is normal"};
+	if ($check_net_r_kb > 50) {$recommendation_net = " Your network band is good!"};
+}
+else
+{
+	$recommendation_net = " Please use the internet during the test to get results";
+}
+print  '<script> document.getElementById("recommendation_net").innerHTML=
+"'.$recommendation_net.'"</script>' ;
+
+#//////////////////////////////////////////////////////////////////////////
+#		    Script code binding with the data
+#//////////////////////////////////////////////////////////////////////////
+
+print '
+<script type="text/javascript">
+function start_Analysis() {
+
+	document.getElementById("recommendation_disk").style.visibility = "visible"; 
+	document.getElementById("recommendation_cpu").style.visibility = "visible"; 
+	document.getElementById("recommendation_mem").style.visibility = "visible"; 
+	document.getElementById("recommendation_net").style.visibility = "visible"; 
+	
+	var chart = new CanvasJS.Chart("chartContainer1",
+	{
+		title:{
+			text: "Currently mounted filesystems"
+		},
+		exportFileName: "Pie Chart",
+		exportEnabled: false,
+                animationEnabled: true,
+		legend:{
+			verticalAlign: "bottom",
+			horizontalAlign: "center"
+		},
+		data: [
+		{       
+			type: "pie",
+			showInLegend: true,
+			toolTipContent: "{legendText}: <strong>{y} MB</strong>",
+			indexLabel: "{label} {y} MB",
+			dataPoints: [
+				{  y: '.@value_disk[1].', legendText: "'.@data_disk[1].'", exploded: true, label: "'.@data_disk[1].'" },
+				{  y: '.@value_disk[2].', legendText: "'.@data_disk[2].'", label: "'.@data_disk[2].'" }
+			]
+	}
+	]
+	});
+	chart.render();
+
+    var chart2 = new CanvasJS.Chart("chartContainer2",
+    {
+      title:{
+        text: "CPU utilization"             
+      },   
+      animationEnabled: true,   
+      toolTip: {
+        shared: true,
+      },   
+      axisY:{ 
+        title: "Percentage",
+        includeZero: false,
+        suffix : "%",
+        lineColor: "#369EAD"        
+      },
+      axisX: {
+        title: "Time[sec]",
+        suffix : "s"
+      },
+      data: [
+      {        
+        type: "spline",
+        name: "'.@data_cpu[3].'",
+        dataPoints: [
+        {x: 0 , y: '.@value_cpu_01[3].'} ,     
+        {x: 2 , y: '.@value_cpu_02[3].'} ,     
+        {x: 4 , y: '.@value_cpu_03[3].'} ,     
+	{x: 6 , y: '.@value_cpu_04[3].'} ,     
+        {x: 8 , y: '.@value_cpu_05[3].'} ,     
+        {x: 10, y: '.@value_cpu_06[3].'} ,     
+        {x: 12 , y: '.@value_cpu_07[3].'},
+	{x: 14 , y: '.@value_cpu_08[3].'},     
+        {x: 16 , y: '.@value_cpu_09[3].'},     
+        {x: 18 , y: '.@value_cpu_10[3].'}   
+        ]
+      }, 
+      {        
+        type: "spline",
+        name: "'.@data_cpu[5].'",
+        dataPoints: [
+        {x: 0 , y: '.@value_cpu_01[5].'} ,     
+        {x: 2 , y: '.@value_cpu_02[5].'} ,     
+        {x: 4 , y: '.@value_cpu_03[5].'} ,     
+	{x: 6 , y: '.@value_cpu_04[5].'} ,     
+        {x: 8 , y: '.@value_cpu_05[5].'} ,     
+        {x: 10, y: '.@value_cpu_06[5].'} ,     
+        {x: 12 , y: '.@value_cpu_07[5].'},
+	{x: 14 , y: '.@value_cpu_08[5].'},     
+        {x: 16 , y: '.@value_cpu_09[5].'},     
+        {x: 18 , y: '.@value_cpu_10[5].'}   
+        ]
+      }, 
+      {        
+        type: "spline",
+        name: "'.@data_cpu[8].'",
+        dataPoints: [
+        {x: 0 , y: '.@value_cpu_01[8].'} ,     
+        {x: 2 , y: '.@value_cpu_02[8].'} ,     
+        {x: 4 , y: '.@value_cpu_03[8].'} ,     
+	{x: 6 , y: '.@value_cpu_04[8].'} ,     
+        {x: 8 , y: '.@value_cpu_05[8].'} ,     
+        {x: 10, y: '.@value_cpu_06[8].'} ,     
+        {x: 12 , y: '.@value_cpu_07[8].'},
+	{x: 14 , y: '.@value_cpu_08[8].'},     
+        {x: 16 , y: '.@value_cpu_09[8].'},     
+        {x: 18 , y: '.@value_cpu_10[8].'}   
+        ]
+      },
+      {        
+        type: "spline",
+        name: "'.@data_cpu[6].'",
+        dataPoints: [
+        {x: 0 , y: '.@value_cpu_01[6].'} ,     
+        {x: 2 , y: '.@value_cpu_02[6].'} ,     
+        {x: 4 , y: '.@value_cpu_03[6].'} ,     
+	{x: 6 , y: '.@value_cpu_04[6].'} ,     
+        {x: 8 , y: '.@value_cpu_05[6].'} ,     
+        {x: 10, y: '.@value_cpu_06[6].'} ,     
+        {x: 12 , y: '.@value_cpu_07[6].'},
+	{x: 14 , y: '.@value_cpu_08[6].'},     
+        {x: 16 , y: '.@value_cpu_09[6].'},     
+        {x: 18 , y: '.@value_cpu_10[6].'}   
+        ]
+      },
+      ]
+    });
+
+chart2.render();
+
+    var chart3 = new CanvasJS.Chart("chartContainer3",
+    {
+        title: {
+            text: "memory  utilization statistics"             
+        },
+        animationEnabled: true,
+        axisX:{      
+       	 title: "Time[sec]",
+        	suffix : "s"
+        },
+        axisY: {
+            title: "Percentage"
+        },
+        legend: {
+            verticalAlign: "bottom",
+            horizontalAlign: "center"
+        },
+
+        data: [{        
+            name: "used",
+            showInLegend: true,
+            legendMarkerType: "square",
+            type: "area",
+            color: "rgba(40,175,101,0.6)",
+            markerSize: 0,
+            
+            dataPoints: [
+            {x:0 , y: '.@value_mem_01[4].'},
+            {x:2 , y: '.@value_mem_02[4].'},
+            {x:4 , y: '.@value_mem_03[4].'},
+            {x:6 , y: '.@value_mem_04[4].'},
+            {x:8 , y: '.@value_mem_05[4].'},
+            {x:10 , y: '.@value_mem_06[4].'},
+            {x:12 , y: '.@value_mem_07[4].'},
+            {x:14 , y: '.@value_mem_08[4].'},
+            {x:16 , y: '.@value_mem_09[4].'},
+            {x:18 , y: '.@value_mem_10[4].'}
+            ]
+        }
+        ]
+    });
+
+chart3.render();
+
+	var chart4 = new CanvasJS.Chart("chartContainer4",
+	{
+		theme: "theme3",
+                animationEnabled: true,
+		title:{
+			text: "Report network statistics",
+			fontSize: 30
+		},
+		toolTip: {
+			shared: true
+		},			
+		axisY: {
+    	  	title: "kb/s"
+		},
+		axisY2: {
+     		 title: "pck/s"
+		},			
+		data: [ 
+		{
+			type: "column",	
+      		name: "kb/s",
+     		legendText: "kb/s",
+			showInLegend: true, 
+			dataPoints:[
+			{label: "received", y:'.@value_net_avg[4].'},
+			{label: "transmit", y: '.@value_net_avg[5].'}
+			]
+		},
+		{
+			type: "column",	
+			name: "packets",
+			legendText: "packets",
+			axisYType: "secondary",
+			showInLegend: true,
+			dataPoints:[
+			{label: "received", y:'.@value_net_avg[2].'},
+			{label: "transmit", y:'.@value_net_avg[3].'}
+			]
+		}
+		]
+	});
+
+chart4.render();
+
+}
+</script>
+';
+
+
+

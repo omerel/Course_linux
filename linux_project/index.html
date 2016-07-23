@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Linux Project</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="text-center text-primary">
+				Linux project - Analysis system performnece
+			</h1> 
+			<h3 class="text-center text-primary">
+				Omer Elgrably & Rami Kashi
+			</h3>
+			<br> 
+			<div style="text-align: center"> 
+			<button type="button"  class="btn btn-primary btn-lg" onClick="start_Analysis()">
+				Click to Analysis
+			</button>
+			</div>
+			<br>
+			<div class="progress progress-striped active">
+				<div class="progress-bar progress-success">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_disk" style = "text-align: center; color: blue; visibility:hidden" > </h3>
+		</div>
+		<div class="col-md-6">
+		<div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_cpu" style = "text-align: center; color: blue; visibility:hidden" >  </h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<div id="chartContainer3" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_mem" style = "text-align: center; color: blue; visibility:hidden"> </h3>
+		</div>
+		<div class="col-md-6">
+		<div id="chartContainer4" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_net" style = "text-align: center; color: blue; visibility:hidden"> </h3>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/canvasjs.min.js"></script><script> document.getElementById("recommendation_disk").innerHTML=
+"All good, You Have many free space "</script><script> document.getElementById("recommendation_cpu").innerHTML=
+"Your cpu is awesome, The OS works well on your cpu"</script><script> document.getElementById("recommendation_mem").innerHTML=
+"Your memroy run out, you need to upgrade"</script><script> document.getElementById("recommendation_net").innerHTML=
+" Please use the internet during the test to get results"</script>
+<script type="text/javascript">
+function start_Analysis() {
+
+	document.getElementById("recommendation_disk").style.visibility = "visible"; 
+	document.getElementById("recommendation_cpu").style.visibility = "visible"; 
+	document.getElementById("recommendation_mem").style.visibility = "visible"; 
+	document.getElementById("recommendation_net").style.visibility = "visible"; 
+	
+	var chart = new CanvasJS.Chart("chartContainer1",
+	{
+		title:{
+			text: "Currently mounted filesystems"
+		},
+		exportFileName: "Pie Chart",
+		exportEnabled: false,
+                animationEnabled: true,
+		legend:{
+			verticalAlign: "bottom",
+			horizontalAlign: "center"
+		},
+		data: [
+		{       
+			type: "pie",
+			showInLegend: true,
+			toolTipContent: "{legendText}: <strong>{y} MB</strong>",
+			indexLabel: "{label} {y} MB",
+			dataPoints: [
+				{  y: 14684, legendText: "MBfsfree", exploded: true, label: "MBfsfree" },
+				{  y: 4337, legendText: "MBfsused", label: "MBfsused" }
+			]
+	}
+	]
+	});
+	chart.render();
+
+    var chart2 = new CanvasJS.Chart("chartContainer2",
+    {
+      title:{
+        text: "CPU utilization"             
+      },   
+      animationEnabled: true,   
+      toolTip: {
+        shared: true,
+      },   
+      axisY:{ 
+        title: "Percentage",
+        includeZero: false,
+        suffix : "%",
+        lineColor: "#369EAD"        
+      },
+      axisX: {
+        title: "Time[sec]",
+        suffix : "s"
+      },
+      data: [
+      {        
+        type: "spline",
+        name: "%user",
+        dataPoints: [
+        {x: 0 , y: 1.53} ,     
+        {x: 2 , y: 6.06} ,     
+        {x: 4 , y: 3.55} ,     
+	{x: 6 , y: 1.01} ,     
+        {x: 8 , y: 0.51} ,     
+        {x: 10, y: 0.50} ,     
+        {x: 12 , y: 0.50},
+	{x: 14 , y: 0.50},     
+        {x: 16 , y: 1.01},     
+        {x: 18 , y: 0.00}   
+        ]
+      }, 
+      {        
+        type: "spline",
+        name: "%system",
+        dataPoints: [
+        {x: 0 , y: 0.51} ,     
+        {x: 2 , y: 2.02} ,     
+        {x: 4 , y: 1.02} ,     
+	{x: 6 , y: 0.00} ,     
+        {x: 8 , y: 0.51} ,     
+        {x: 10, y: 0.50} ,     
+        {x: 12 , y: 0.50},
+	{x: 14 , y: 0.50},     
+        {x: 16 , y: 0.50},     
+        {x: 18 , y: 0.51}   
+        ]
+      }, 
+      {        
+        type: "spline",
+        name: "%idle",
+        dataPoints: [
+        {x: 0 , y: 97.96} ,     
+        {x: 2 , y: 91.92} ,     
+        {x: 4 , y: 95.43} ,     
+	{x: 6 , y: 98.99} ,     
+        {x: 8 , y: 98.99} ,     
+        {x: 10, y: 99.00} ,     
+        {x: 12 , y: 98.99},
+	{x: 14 , y: 98.99},     
+        {x: 16 , y: 98.49},     
+        {x: 18 , y: 99.49}   
+        ]
+      },
+      {        
+        type: "spline",
+        name: "%iowait",
+        dataPoints: [
+        {x: 0 , y: 0.00} ,     
+        {x: 2 , y: 0.00} ,     
+        {x: 4 , y: 0.00} ,     
+	{x: 6 , y: 0.00} ,     
+        {x: 8 , y: 0.00} ,     
+        {x: 10, y: 0.00} ,     
+        {x: 12 , y: 0.00},
+	{x: 14 , y: 0.00},     
+        {x: 16 , y: 0.00},     
+        {x: 18 , y: 0.00}   
+        ]
+      },
+      ]
+    });
+
+chart2.render();
+
+    var chart3 = new CanvasJS.Chart("chartContainer3",
+    {
+        title: {
+            text: "memory  utilization statistics"             
+        },
+        animationEnabled: true,
+        axisX:{      
+       	 title: "Time[sec]",
+        	suffix : "s"
+        },
+        axisY: {
+            title: "Percentage"
+        },
+        legend: {
+            verticalAlign: "bottom",
+            horizontalAlign: "center"
+        },
+
+        data: [{        
+            name: "used",
+            showInLegend: true,
+            legendMarkerType: "square",
+            type: "area",
+            color: "rgba(40,175,101,0.6)",
+            markerSize: 0,
+            
+            dataPoints: [
+            {x:0 , y: 83.64},
+            {x:2 , y: 83.64},
+            {x:4 , y: 83.64},
+            {x:6 , y: 83.64},
+            {x:8 , y: 83.64},
+            {x:10 , y: 83.64},
+            {x:12 , y: 83.64},
+            {x:14 , y: 83.64},
+            {x:16 , y: 83.64},
+            {x:18 , y: 83.64}
+            ]
+        }
+        ]
+    });
+
+chart3.render();
+
+	var chart4 = new CanvasJS.Chart("chartContainer4",
+	{
+		theme: "theme3",
+                animationEnabled: true,
+		title:{
+			text: "Report network statistics",
+			fontSize: 30
+		},
+		toolTip: {
+			shared: true
+		},			
+		axisY: {
+    	  	title: "kb/s"
+		},
+		axisY2: {
+     		 title: "pck/s"
+		},			
+		data: [ 
+		{
+			type: "column",	
+      		name: "kb/s",
+     		legendText: "kb/s",
+			showInLegend: true, 
+			dataPoints:[
+			{label: "received", y:0.01},
+			{label: "transmit", y: 0.01}
+			]
+		},
+		{
+			type: "column",	
+			name: "packets",
+			legendText: "packets",
+			axisYType: "secondary",
+			showInLegend: true,
+			dataPoints:[
+			{label: "received", y:0.15},
+			{label: "transmit", y:0.10}
+			]
+		}
+		]
+	});
+
+chart4.render();
+
+}
+</script>
+
+  </body>
+</html>

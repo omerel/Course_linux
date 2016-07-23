@@ -1,0 +1,4 @@
+#! /bin/bash
+
+# start the analysis and create the html file
+./create_index > ../index.html

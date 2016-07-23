@@ -1,0 +1,77 @@
+#!/usr/bin/perl
+
+# Print the body of the html page
+print '
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Linux Project</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="text-center text-primary">
+				Linux project - Analysis system performnece
+			</h1> 
+			<h3 class="text-center text-primary">
+				Omer Elgrably & Rami Kashi
+			</h3>
+			<br> 
+			<div style="text-align: center"> 
+			<button type="button"  class="btn btn-primary btn-lg" onClick="start_Analysis()">
+				Click to Analysis
+			</button>
+			</div>
+			<br>
+			<div class="progress progress-striped active">
+				<div class="progress-bar progress-success">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_disk" style = "text-align: center; color: blue; visibility:hidden" > </h3>
+		</div>
+		<div class="col-md-6">
+		<div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_cpu" style = "text-align: center; color: blue; visibility:hidden" >  </h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<div id="chartContainer3" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_mem" style = "text-align: center; color: blue; visibility:hidden"> </h3>
+		</div>
+		<div class="col-md-6">
+		<div id="chartContainer4" style="height: 300px; width: 100%;"></div>
+		<h3 id = "recommendation_net" style = "text-align: center; color: blue; visibility:hidden"> </h3>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/canvasjs.min.js"></script>';
+
+# create the graph script
+system('./create_graph');
+
+print '
+  </body>
+</html>';
